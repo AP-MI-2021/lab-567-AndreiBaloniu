@@ -1,5 +1,5 @@
 from Logic.crud import AdaugaObiectLista, ModificareObiectLista, StergereObiectLista
-from Domain.inventar import toString
+from Domain.inventar2 import toString
 
 
 def PrintMenu():

@@ -1,4 +1,4 @@
-from Domain.inventar import CreazaObiect, get_ID
+from Domain.inventar2 import CreazaObiect, get_ID
 
 
 def AdaugaObiectLista(id, nume, descriere, pret_achizitie, locatie, lista):
