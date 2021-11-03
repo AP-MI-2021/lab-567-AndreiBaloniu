@@ -1,5 +1,5 @@
 from UserInterface.console import run_UI
-from Tests.test_all import run_all_tests
+from Tests.test_crud import run_all_tests
 
 
 def main():

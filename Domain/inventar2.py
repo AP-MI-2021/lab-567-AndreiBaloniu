@@ -32,11 +32,5 @@ def get_Locatie(lista_obiect):
     return lista_obiect[4]
 
 
-def toString(lista_obiect):
-    return "ID: {}, Nume: {}, Descriere: {}, Pret_Achizitie: {}, Locatie: {}".format(
-        get_ID(lista_obiect),
-        get_Nume(lista_obiect),
-        get_Descriere(lista_obiect),
-        get_Pret_Achizitie(lista_obiect),
-        get_Locatie(lista_obiect)
-    )
+def get_str(obiect):
+    return f'Obiectul cu id-ul {get_ID(obiect)}, denumit {get_Nume(obiect)}, cu descrierea {get_Descriere(obiect)},care costa {get_Pret_Achizitie(obiect)},avand locul achiztionarii {get_Locatie(obiect)}'
