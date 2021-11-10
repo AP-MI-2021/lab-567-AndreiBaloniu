@@ -1,157 +1,229 @@
-from Logic.crud import AdaugaObiectLista, ModificareObiectLista, StergereObiectLista
-from Domain.inventar2 import get_str, get_Descriere, get_Pret_Achizitie, get_Locatie
-from Logic.mutare import mutare_obiecte_alta_locatie
-from Logic.locuri import loc_sep
-from Logic.concatenare import concatenare_string_dupa_pret_citit
+from Domain.inventar import get_new_object, get_object_string, get_locatie, get_pret_achizitie
+from Logic.ccm_pret_pt_fiecare_locatie import cmm_pret_pt_fiecare_locatie
+from Logic.concatenare import concatenate_strings
+from Logic.crud import delete, update, create, read
+from Logic.mutare import mutare
 from Logic.ordonare import ordonare_obiecte
+from Logic.suma_preturilor_pt_fiecare_locatie import suma_preturilor_fiecare_locatie
+
+
+def handle_create(lista_obiecte):
+    try:
+        id_obiect = int(input("Introduceti ID-ul obiectului: "))
+        if read(lista_obiecte, id_obiect) is not None:
+            raise ValueError("Exista deja un obiect cu acest ID!")
+        nume = input("Introduceti numele obiectului: ")
+        if not nume:
+            raise ValueError("Numele nu poate sa fie nul.")
+
+        descriere = input("Introduceti descrierea obiectului: ")
+        if not descriere:
+            raise ValueError("Descrierea nu poate sa fie nula.")
+        pret_achizitie = float(input("Introduceti pretul de achizitie al obiectlui: "))
+        if pret_achizitie < 0:
+            raise ValueError("Pretul nu poate fi negativ.")
+        locatie = input("Introduceti locatia obiectului: ")
+        return create(lista_obiecte, id_obiect, nume, descriere, pret_achizitie, locatie)
+    except ValueError as ve:
+        print("Eroare, nu ati introdus o valoare valida!", ve)
+
+    return lista_obiecte
+
+
+def handle_delete(lista_obiecte):
+    try:
+        id_obiect = int(input("Introduceti ID-ul elementului pe care doriti sa il stergeti: "))
+        if read(lista_obiecte, id_obiect) is None:
+            raise ValueError("Obiectul cu ID-ul introdus nu exista!")
+        lista_obiecte = delete(lista_obiecte, id_obiect)
+    except ValueError as ve:
+        print("Eroare, nu ati introdus o valoare valida pentru ID!", ve)
+    return lista_obiecte
+
+
+def handle_update(lista_obiecte):
+    try:
+        id_obiect = int(input("Introduceti ID-ul obiectului pe care doriti sa il modificati: "))
+        if read(lista_obiecte, id_obiect) is None:
+            raise ValueError("Obiectul cu ID-ul introdus nu exista.")
+        nume = input("Introduceti numele obiectului: ")
+        if not nume:
+            raise ValueError("Numele nu poate sa fie nul.")
+        descriere = input("Introduceti descrierea obiectului: ")
+        if not descriere:
+            raise ValueError("Descrierea nu poate sa fie nula.")
+        pret_achizitie = float(input("Introduceti pretul de achizitie al obiectlui: "))
+        if pret_achizitie < 0:
+            raise ValueError("Pretul nu poate fi negativ.")
+        locatie = input("Introduceti locatia obiectului: ")
+        new_object = get_new_object(id_obiect, nume, descriere, pret_achizitie, locatie)
+        lista_obiecte = update(lista_obiecte, new_object)
+    except ValueError as ve:
+        print("Eroare, nu ati introdus o valoare valida!", ve)
+
+    return lista_obiecte
+
+
+def handle_suma_preturilor_fiecare_locatie(lista_obiecte):
+    lista_sumelor_preturilor = suma_preturilor_fiecare_locatie(lista_obiecte)
+    for element in lista_sumelor_preturilor:
+        print(f'Suma preturilor pentru locatia {get_locatie(element)} este {get_pret_achizitie(element)}')
+
+
+def handle_ordonare_obiecte(lista_obiecte):
+    return ordonare_obiecte(lista_obiecte)
+
+
+def handle_cmm_pret_pentru_fiecare_locatie(lista_obiecte):
+    cmm_pret = cmm_pret_pt_fiecare_locatie(lista_obiecte)
+    for element in cmm_pret:
+        print(f'Cel mai mare pret pentru locatia {get_locatie(element)} este {get_pret_achizitie(element)}')
+
+
+def handle_show_all(lista_obiecte):
+    for obiect in lista_obiecte:
+        print(get_object_string(obiect))
+
+
+def handle_mutare(lista_obiecte):
+    try:
+        locatie_noua = input('Introduceti locatia noua: ')
+        return mutare(lista_obiecte, locatie_noua)
+    except ValueError as ve:
+        print("Locatia noua introdusa este gresita:", ve)
+
+
+def handle_concatenare_str(lista_obiecte):
+    try:
+        string = str(input("Dati stringul: "))
+        valoare = float(input("Dati valoarea: "))
+        return concatenate_strings(lista_obiecte, string, valoare)
+    except ValueError as ve:
+        print("Datele introduse sunt gresite", ve)
+
+
+def handle_new_list(versions_list, curent_version, lista_obiecte):
+    while curent_version < len(versions_list) - 1:
+        versions_list.pop()
+    versions_list.append(lista_obiecte)
+    curent_version += 1
+    return versions_list, curent_version
+
+
+def handle_undo(list_versions, current_version):
+    """
+    Functia are rolul de a reface ulima modificare facuta listei inainte de ultima executare,
+    respectiv o refacere a listei dupa executarea unui functionalitati.
+    :param list_versions: vesriunea actuala a listei
+    :param current_version: numarul care reprezinta versiunea listei
+    :return: lista actualizata in urma executarii functiei
+    """
+    if current_version < 1:
+        print("Nu se mai poate face undo.")
+        return [], 0
+    current_version -= 1
+    return list_versions[current_version], current_version
+
+
+def handle_redo(list_versions, current_version):
+    """
+    Functia are rolul de a reface ulima modificare facuta listei inainte de ultima executare,
+    respectiv o refacere a listei dupa executarea unui Undo.
+    :param list_versions: vesriunea actuala a listei
+    :param current_version: numarul care reprezinta versiunea listei
+    :return: lista actualizata in urma executarii functiei
+    """
+
+    if current_version == len(list_versions) - 1:
+        print("Nu se mai poate face redo.")
+        return list_versions[current_version], current_version
+    current_version += 1
+    return list_versions[current_version], current_version
 
 
 def show_menu():
-    print("2.1 Adăugare / ștergere / modificare obiect")
-    print("2.2 Mutarea tuturor obiectelor dintr-o locație în alta.")
-    print("2.3 Concatenarea unui string citit la  descrierile obiectelor cu prețul mai mare decât o valoare citită.")
-    #print("2.4 Determinarea celui mai mare preț pentru fiecare locație.")
-    print("2.4 Ordonarea obiectelor crescător după prețul de achiziție.")
-    print("a. Afisare")
-    print("x. Iesire")
+    print("""
+            1. Adaugare obiect
+            2. Stergere obiect
+            3. Modificare obiect
+            4. Muta toate obiectele dintr-o locatie in alta
+            5. Concateneaza un string la toate descrierile obiectelor cu un pret mai mare decat o anumita valoare
+            6. Determina cel mai mare pret pentru fiecare locatie
+            7. Ordoneaza obiectele crescator dupa pret
+            8. Determina suma preturilor pentru fiecare locatie
+            u. Undo
+            r. Redo
+            a. Show all
+            x. Iesire program
+    """)
 
 
-def UI_SubMenu(obiecte):
+def run_console(lista_obiecte):
+
+    current_version = 0
+    list_versions = [lista_obiecte]
+
     while True:
-        print("1. Adauga obiect.")
-        print("2. Modifica obiect.")
-        print("3. Sterge obiect.")
-        print("b. Revenire.")
-        optiune = input('Optiune aleasa: ')
-        if optiune == '1':
-            obiecte = UI_AdaugaObiect(obiecte)
-        elif optiune == '2':
-            obiecte = UI_ModificaObiect(obiecte)
-        elif optiune == '3':
-            obiecte = UI_StergereObiect(obiecte)
-        elif optiune == 'b':
-            return obiecte
-        else:
-            print('Optiune invalida.')
 
+        try:
+            show_menu()
 
-def UI_AdaugaObiect(lista):
-    try:
-        id = int(input("Scrie id-ul: "))
-        nume = input("Scrie numele obiectului: ")
-        descriere = input("Scrie descrierea obiectului: ")
-        pret = float(input("Scrie pretul achizitiei obectului: "))
-        locatie = input("Scrie locatia obiectului: ")
-        return AdaugaObiectLista(id, nume, descriere, pret, locatie, lista)
-    except ValueError as ve:
-        print('Eroare: ', ve)
+            optiune = input("Introduceti optiunea: ")
 
+            if optiune == '1':
 
-def UI_ModificaObiect(lista):
-    try:
-        id = int(input("Scrie id-ul obiectului de modificat: "))
-        nume = input("Scrie noul nume al obiectului: ")
-        descriere = input("Scrie noua descriere al obiectului: ")
-        pret = float(input("Scrie noul pret al obectului: "))
-        locatie = input("Scrie noua locatia a obiectului: ")
-        return ModificareObiectLista(id, nume, descriere, pret, locatie, lista)
-    except ValueError as ve:
-        print('Eroare: ', ve)
+                lista_obiecte = handle_create(lista_obiecte)
+                list_versions, current_version = handle_new_list(list_versions, current_version, lista_obiecte)
 
+            elif optiune == '2':
 
-def UI_StergereObiect(lista):
-    try:
-        id = int(input("Scrie id-ul obiectului de sters: "))
-        return StergereObiectLista(id, lista)
-    except ValueError as ve:
-        print('Eroare: ', ve)
+                lista_obiecte = handle_delete(lista_obiecte)
+                list_versions, current_version = handle_new_list(list_versions, current_version, lista_obiecte)
 
+            elif optiune == '3':
 
-def UI_ShowAll(lista):
-    print("Obiectele din inventar sunt: ")
-    for obiect in lista:
-        print(get_str(obiect))
+                lista_obiecte = handle_update(lista_obiecte)
+                list_versions, current_version = handle_new_list(list_versions, current_version, lista_obiecte)
 
+            elif optiune == '4':
 
-def UI_Concatenare(obiecte):
-    try:
-        pret = int(input("Dati pretul unui obiect: "))
-        string = input("Dati mesajul pe care-l doriti la descriere: ")
-        obiecte = concatenare_string_dupa_pret_citit(obiecte, pret, string)
-        print("Concatenarea stringurilor s-a realizat.")
-    except ValueError as ve:
-        print('Eroare: ', ve)
-    return obiecte
+                lista_obiecte = handle_mutare(lista_obiecte)
+                list_versions, current_version = handle_new_list(list_versions, current_version, lista_obiecte)
 
+            elif optiune == '5':
 
-def UI_Mutare_Obiect(obiecte):
-    try:
-        old_location = input("Locatia initiala a obiectului: ")
-        new_location = input("Noua locatia a obiectului: ")
-        obiecte = mutare_obiecte_alta_locatie(obiecte, old_location, new_location)
-        print("Obiectul a fost mutat in noua locatie.")
-    except ValueError as ve:
-        print('Eroare: ', ve)
-    return obiecte
+                lista_obiecte = handle_concatenare_str(lista_obiecte)
+                list_versions, current_version = handle_new_list(list_versions, current_version, lista_obiecte)
 
+            elif optiune == '6':
 
-def UI_cel_mai_mare_pret_din_ficare_loc(obiecte):
-    '''
-    O sa calculeze cel mai mai mare pret din fiecare locatie.
-    :param obiecte: lista de obiecte
-    :return:
-    '''
-    lista = loc_sep(obiecte)
-    for i in lista:
-        pret_maxim = -1
-        for obiect in obiecte:
-            if get_Locatie(obiect) == i:
-                if pret_maxim < get_Pret_Achizitie(obiect):
-                    pret_maxim = get_Pret_Achizitie(obiect)
+                handle_cmm_pret_pentru_fiecare_locatie(lista_obiecte)
 
-        print(f'Pretul cel mai mare din {i} este {pret_maxim}')
+            elif optiune == '7':
 
-def UI_Ordonare_dupa_pret(obiecte):
-    pass
+                lista_obiecte = handle_ordonare_obiecte(lista_obiecte)
+                list_versions, current_version = handle_new_list(list_versions, current_version, lista_obiecte)
 
+            elif optiune == '8':
+                handle_suma_preturilor_fiecare_locatie(lista_obiecte)
 
-def UI_afisare_sumelor_pret_pentru_fiecare_loc(obiecte):
-    '''
-    Afiseaza suma preturilor obiectelor din fiecare loc.
-    :param obiecte: lista de obiecte.
-    :return:
-    '''
-    list = loc_sep(obiecte)
-    for i in list:
-        suma = 0
-        for obiect in obiecte:
-            if get_Locatie(obiect) == i:
-                suma = suma + get_Pret_Achizitie(obiect)
+            elif optiune == 'u':
 
-        print(f'Suma tutror obiectelor din zona {i} este {suma}')
+                lista_obiecte, current_version = handle_undo(list_versions, current_version)
 
+            elif optiune == 'r':
 
-def run_UI(lista):
-    while True:
-        show_menu()
-        optiune = input("Alege o optiune: ")
-        if optiune == '2.1':
-            lista = UI_SubMenu(lista)
-        elif optiune == '2.2':
-            lista = UI_Mutare_Obiect(lista)
-        elif optiune == '2.3':
-            lista = UI_Concatenare(lista)
-        #elif optiune == '2.4':
-            #lista = UI_cel_mai_mare_pret_din_ficare_loc(lista)
-        elif optiune == '2.4':
-            lista = UI_Ordonare_dupa_pret(lista)
-            print('Ordonarea obiectelor dupa pret a avut loc cu succes.')
-        elif optiune == '2.6':
-            lista = UI_afisare_sumelor_pret_pentru_fiecare_loc(lista)
-        elif optiune == 'a':
-            UI_ShowAll(lista)
-        elif optiune == 'x':
-            print("Program incheiat.")
-            break
-        else:
-            print("Ai ales o optiune inexistenta, incearca din nou: ")
+                lista_obiecte, current_version = handle_redo(list_versions, current_version)
+
+            elif optiune == 'a':
+
+                handle_show_all(lista_obiecte)
+
+            elif optiune == 'x':
+                break
+
+            else:
+                print("Optiune invalida!")
+
+        except Exception as ex:
+            print("Eroare! ", ex)

@@ -1,26 +1,17 @@
-from Domain.inventar2 import CreazaObiect, get_ID, get_Locatie, get_Descriere, get_Nume, get_Pret_Achizitie
+from Domain.inventar import get_locatie, get_pret_achizitie, get_new_object, get_id, get_nume, get_descriere
 
-def mutare_obiecte_alta_locatie(lista, locatie, destinatie):
-    '''
-    Mutarea obiectelor din lista din aceeasi locatie in alta
-    :param lista: lista obiectelor
-    :param locatie: locatia initiala
-    :param destinatie: locatia finala
-    :return:lista obiectelor modificata
-    '''
-    if len(locatie) != 4 or len(destinatie) != 4:
-        raise ValueError(f'Locatia a fost introdusa gresit! Trebuie sa aiba exact 4 caractere!')
 
-    result = []
-    for element in lista:
-        if get_Locatie(element) != locatie:
-            result.append(element)
-        else:
-            id = get_ID(element)
-            nume = get_Nume(element)
-            descriere = get_Descriere(element)
-            pret = get_Pret_Achizitie(element)
-            obiect = CreazaObiect(id, nume, descriere, pret, destinatie)
-            result.append(obiect)
-
-    return result
+def mutare(lista_obiecte, new_loc):
+    """
+    :param lista_obiecte: obiectele din inventarul institutiei
+    :param initial_loc:locatia initiala a obiectului
+    :param new_loc:locatia noua, in care va fi mutat obiectul
+    :return:lista cu obiectele din inventarul institutiei, actualizata
+    """
+    if len(new_loc) != 4:
+        raise ValueError('Trebuie sa aiba 4 caractere!')
+    new_list = []
+    for obiect in lista_obiecte:
+        new_list.append(get_new_object(get_id(obiect), get_nume(obiect),
+                                       get_descriere(obiect), get_pret_achizitie(obiect), new_loc))
+    return new_list

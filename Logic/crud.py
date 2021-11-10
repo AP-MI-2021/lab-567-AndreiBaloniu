@@ -1,66 +1,77 @@
-from Domain.inventar2 import CreazaObiect, get_ID
+from Domain.inventar import get_new_object, get_id, get_locatie
 
 
-def AdaugaObiectLista(id, nume, descriere, pret_achizitie, locatie, lista):
+def create(lista_obiecte: list, _id: int, _nume: str, _descriere: str, _pret_achizitie: float, _locatie: str):
     """
-    Adauga un obiect intr-o lista data
-    :param id: id-ul obiect
-    :param nume: numele obiectului
-    :param descriere: descrierea obiectului
-    :param pret_achizitie: pretul obiectului
-    :param locatie: locatia obiectului
-    :param lista: lista in care este adaugat obiectul
-    :return: lista cu obiectul adaugat
+    Concateneaza un obiect la lista de obiecte
+    :param lista_obiecte:
+    :param _id:
+    :param _nume:
+    :param _descriere:
+    :param _pret_achizitie:
+    :param _locatie:
+    :return: lista de obiecte cu noul element
     """
-    obiect = CreazaObiect(id, nume, descriere, pret_achizitie, locatie)
-    return lista + [obiect]
+    obiect = get_new_object(_id, _nume, _descriere, _pret_achizitie, _locatie)
+
+    if len(get_locatie(obiect)) != 4:
+
+        raise ValueError("Numele locatiei trebuie sa fie de exact 4 caractere!")
+
+    return lista_obiecte + [obiect]
 
 
-def GetById(id, lista):
+def read(lista_obiecte: list, id_obiect: int = None):
     """
-    Citeste un obiect cu id dat din lista
-    :param id: id-ul obiectului
-    :param lista: lista de obiecte
-    :return: id-ul dorit
+    Returneaza obiectul caruia ii corespunde ID-ul transmis ca parametru
+    :param lista_obiecte:
+    :param id_obiect:
+    :return: obiectul
     """
-    for obiect in lista:
-        if get_ID(obiect) == id:
-            return obiect
 
-    return None
+    obiect_gasit = None
 
+    if id_obiect is None:
+        return lista_obiecte
 
-def StergereObiectLista(id, lista):
-    """
-    Sterge un obiect din lista data
-    :param id: id obiect
-    :param lista: lista initiala
-    :return: lista noua
-    """
-    new_list = []
-    for obiect in lista:
-        if get_ID(obiect) != id:
-            new_list.append(obiect)
-    return new_list
+    for obiect in lista_obiecte:
+        if get_id(obiect) == id_obiect:
+            obiect_gasit = obiect
+
+    return obiect_gasit
 
 
-def ModificareObiectLista(id, nume, descriere, pret_achizitie, locatie, lista):
+def update(lista_obiecte: list, new_object):
     """
-    Modifica un obiect cu id-ul dat din lista
-    :param id: id-ul obiect
-    :param nume: numele obiectului
-    :param descriere: descrierea obiectului
-    :param pret_achizitie: pretul obiectului
-    :param locatie: locatia obiectului
-    :param lista: lista in care este adaugat obiectul
-    :return: lista obtinuta in urma modificarii
+    Modifica un element al listei
+    :param lista_obiecte:
+    :param new_object:
+    :return:
     """
-    new_list = []
-    for obiect in lista:
-        if get_ID(obiect) == id:
-            obiect_nou = CreazaObiect(id, nume, descriere, pret_achizitie, locatie)
-            new_list.append(obiect_nou)
+
+    result_list = []
+
+    for obiect in lista_obiecte:
+        if get_id(obiect) == get_id(new_object):
+            result_list.append(new_object)
         else:
-            new_list.append(obiect)
+            result_list.append(obiect)
 
-    return new_list
+    return result_list
+
+
+def delete(lista_obiecte: list, id_obiect: int):
+    """
+    Sterge un element al listei
+    :param lista_obiecte:
+    :param id_obiect:
+    :return:
+    """
+
+    result_list = []
+
+    for obiect in lista_obiecte:
+        if get_id(obiect) != id_obiect:
+            result_list.append(obiect)
+
+    return result_list

@@ -1,46 +1,47 @@
-def CreazaObiect(ID, nume, descriere, pret_achizitie, locatie):
+def get_new_object(_id: int, _nume: str, _descriere: str, _pret_achizitie: float, _locatie: str):
     """
-    Creeaza o achizitie
-    :param ID: id-ul obiectului
-    :param nume: numele obiectului
-    :param descriere: descrierea obiectului
-    :param pret_achizitie: pretul obiectului
-    :param locatie: locatia obiectului (exact 4 caractere)
-    :return:
+    Creeaza un obiect
+    :param _id:
+    :param _nume:
+    :param _descriere:
+    :param _pret_achizitie:
+    :param _locatie:
+    :return: obiectul
     """
-    return {
-        'id': ID,
-        'nume': nume,
-        'descriere': descriere,
-        'pret': pret_achizitie,
-        'locatie': locatie,
+    obiect = {
+        'id': _id,
+        'nume': _nume,
+        'descriere': _descriere,
+        'pret_achizitie': _pret_achizitie,
+        'locatie': _locatie
+
+
     }
 
-
-def get_ID(obiect):
-    return obiect["id"]
+    return obiect
 
 
-def get_Nume(obiect):
-    return obiect["nume"]
+def get_id(obiect):
+    return obiect['id']
 
 
-def get_Descriere(obiect):
-    return obiect["descriere"]
+def get_nume(obiect):
+    return obiect['nume']
 
 
-def get_Pret_Achizitie(obiect):
-    return obiect["pret"]
+def get_descriere(obiect):
+    return obiect['descriere']
 
 
-def get_Locatie(obiect):
-    return obiect["locatie"]
+def get_pret_achizitie(obiect):
+    return obiect['pret_achizitie']
 
 
-def get_str(obiect):
-    return f'Obiectul cu id-ul {get_ID(obiect)}, denumit {get_Nume(obiect)}, cu descrierea {get_Descriere(obiect)},care costa {get_Pret_Achizitie(obiect)},avand locul achiztionarii {get_Locatie(obiect)}'
+def get_locatie(obiect):
+    return obiect['locatie']
 
 
+def get_object_string(obiect):
 
-
-
+    return (f'Obiectul cu ID-ul: {get_id(obiect)}, numele: {get_nume(obiect)}, descrirea: {get_descriere(obiect)}, '
+            f'pretul de achizitie: {get_pret_achizitie(obiect)} , locatia: {get_locatie(obiect)}.')

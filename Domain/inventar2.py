@@ -1,36 +1,30 @@
-def CreazaObiect(ID, nume, descriere, pret_achizitie, locatie):
-    """
-    Creeaza o achizitie
-    :param ID: id-ul obiectului
-    :param nume: numele obiectului
-    :param descriere: descrierea obiectului
-    :param pret_achizitie: pretul obiectului
-    :param locatie: locatia obiectului (exact 4 caractere)
-    :return:
-    """
-    lista_obiect = [ID, nume, descriere, pret_achizitie, locatie]
+def get_new_object(_id, _nume, _descriere, _pret_achizitie, _locatie):
+
+    lista_obiect = [_id, _nume, _descriere, _pret_achizitie, _locatie]
     return lista_obiect
 
 
-def get_ID(lista_obiect):
+def get_id(lista_obiect):
     return lista_obiect[0]
 
 
-def get_Nume(lista_obiect):
+def get_nume(lista_obiect):
     return lista_obiect[1]
 
 
-def get_Descriere(lista_obiect):
+def get_descriere(lista_obiect):
     return lista_obiect[2]
 
 
-def get_Pret_Achizitie(lista_obiect):
+def get_pret_achizitie(lista_obiect):
     return lista_obiect[3]
 
 
-def get_Locatie(lista_obiect):
+def get_locatie(lista_obiect):
     return lista_obiect[4]
 
 
-def get_str(obiect):
-    return f'Obiectul cu id-ul {get_ID(obiect)}, denumit {get_Nume(obiect)}, cu descrierea {get_Descriere(obiect)},care costa {get_Pret_Achizitie(obiect)},avand locul achiztionarii {get_Locatie(obiect)}'
+def get_object_string(obiect):
+    return f'Obiectul cu ID-ul: {get_id(obiect)}, numele: {get_nume(obiect)}, \
+    descrirea: {get_descriere(obiect)}, pretul de achizitie: {get_pret_achizitie(obiect)} \
+    , locatia: {get_locatie(obiect)}'

@@ -1,27 +1,19 @@
-from Domain.inventar2 import CreazaObiect, get_ID, get_Locatie, get_Descriere, get_Nume, get_Pret_Achizitie
+from Domain.inventar import get_pret_achizitie, get_new_object, get_id, get_locatie, get_nume, get_descriere
 
 
-def concatenare_string_dupa_pret_citit(lista, pret, string):
-    '''
-    Concatenarea unui string citit de la tastura la descrierea obiectelor cu pretul mai mare decat cel dat
-    :param lista: lista obiectelor
-    :param pret: pretul citit de la tastatura
-    :param string: mesajul care se va concatena la descriere
-    :return: lista obiectelor modificata
-    '''
-    result = []
-    descriere = ''
-    for element in lista:
-        if get_Pret_Achizitie(element) > pret:
-            descriere = get_Descriere(element) + string
-            id = get_ID(element)
-            nume = get_Nume(element)
-            pret = get_Pret_Achizitie(element)
-            locatie = get_Locatie(element)
-            obiect = CreazaObiect(id, nume, descriere, pret, locatie)
-            result.append(obiect)
-
+def concatenate_strings(lista, string, valoare):
+    """
+    :param lista: Aceasta functie primeste o lista de obiecte
+    :param string: Aceasta functie primeste un string
+    :param valoare: Aceasta functie primeste o valoare de tip float
+    :return: Aceasta functie returneaza aceeasi lista, iar in cazul in care
+    exista valori mai mari decat cea data o lista in care obiectele au atasate stringuri la descriere
+    """
+    new_list = []
+    for obiect in lista:
+        if valoare < get_pret_achizitie(obiect):
+            new_list.append(get_new_object(get_id(obiect), get_nume(obiect),
+                                           get_descriere(obiect) + string, get_pret_achizitie(obiect), get_locatie(obiect)))
         else:
-            result.append(element)
-
-    return result
+            new_list.append(obiect)
+    return new_list
