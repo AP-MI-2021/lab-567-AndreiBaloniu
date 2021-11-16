@@ -5,7 +5,7 @@ def concatenate_strings(lista, string, valoare):
     """
     :param lista: Aceasta functie primeste o lista de obiecte
     :param string: Aceasta functie primeste un string
-    :param valoare: Aceasta functie primeste o valoare de tip float
+    :param valoare: Aceasta functie primeste o valoare
     :return: Aceasta functie returneaza aceeasi lista, iar in cazul in care
     exista valori mai mari decat cea data o lista in care obiectele au atasate stringuri la descriere
     """

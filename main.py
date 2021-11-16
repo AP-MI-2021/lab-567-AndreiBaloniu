@@ -3,12 +3,13 @@ from Tests.teste import test_mutare, test_concatenate_strings, test_ordonare_obi
 from Tests.teste_crud import test_crud
 from Tests.test_undo_redo import testare_undo_redo
 from UserInterface.console import run_console
-from UserInterface.console2 import console_2
+from UserInterface.console2 import console2
 
 
 def main():
     lista = []
-    console_2()
+    obiecte = []
+    console2(obiecte)
     run_console(lista)
 
 

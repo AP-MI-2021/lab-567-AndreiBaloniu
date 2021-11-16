@@ -1,4 +1,4 @@
-from Domain.inventar import get_locatie, get_pret_achizitie, get_new_object, get_id, get_nume, get_descriere
+from Domain.inventar import get_pret_achizitie, get_new_object, get_id, get_nume, get_descriere
 
 
 def mutare(lista_obiecte, new_loc):
