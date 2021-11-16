@@ -6,17 +6,17 @@ from Logic.mutare import mutare
 
 def show_menu():
     print("""Adaugare: id, nume, descriere, pret, locatie   -> comanda: adaugare
-             Exemplu:adaugare,1,scaun,albastru,150,IKEA
+                Exemplu: adaugare,1,scaun,albastru,150,IKEA
              Stergere: id obiect     -> comanda: stergere
-             Exemplu:delete
+                Exemplu: delete
              Modificare: id, nume, descriere, pret, locatie -> comanda: update
-             Exemplu:update,1,scaun,albastru,100,IKEA
-             Afisare lista vanzari. -> comanda: showall
-             Modificarea locatiei tuturor obiectelor : locatie  -> comanda: mutare
-             Exemplu:mutare, adada
+                Exemplu: update,1,scaun,albastru,100,IKEA
+             Afisare lista. -> comanda: showall
+             Modificarea locatiei tuturor obiectelor: locatie  -> comanda: mutare
+                Exemplu: mutare, adada
              Concatenare_str: string, valoare   -> comanda: concatenare
-             Exemplu: concatenare,orice,100
-             Oprire. -> comanda: iesire
+                Exemplu: concatenare,orice,100
+             Iesire. -> comanda: iesire
     """)
 
 
